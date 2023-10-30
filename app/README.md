@@ -7,7 +7,7 @@ A Cross Platform and Open Source Electronics Design Automation Suite
 - Linux
 
 ## ⚙️ Setup
-- Install [Qt6](https://doc.qt.io/qt-6/)
+- Install [Qt6](https://doc.qt.io/qt-6)
 - Install [CMake](https://cmake.org)
 - Install [Ninja](https://ninja-build.org)
 
@@ -27,7 +27,7 @@ ninja
 - Build generator: [CMake](https://cmake.org)
 - Build system: [Ninja](https://ninja-build.org)
 - Code formatter: [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
-- Code static analyzer: [clang-tidy](https://clang.llvm.org/extra/clang-tidy/)
+- Code static analyzer: [clang-tidy](https://clang.llvm.org/extra/clang-tidy)
 
 ## 📚 External libraries
 - Ui framework: [Qt6](https://doc.qt.io/qt-6)
