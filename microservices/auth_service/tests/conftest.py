@@ -39,7 +39,7 @@ def _prepare_service_config(grpc_mockserver_endpoint):
 
 
 def pytest_configure(config):
-    sys.path.append(str(pathlib.Path(__file__).parent.parent / "proto/handlers/"))
+    sys.path.append(str(pathlib.Path(__file__).parent.parent / "proto/api/"))
 
 
 @pytest.fixture(scope="session")

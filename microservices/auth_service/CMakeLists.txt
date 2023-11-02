@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(auth_service CXX)
 
+include(cmake/Config.cmake)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 
@@ -9,9 +10,15 @@ add_subdirectory(third_party/userver)
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT src/auth.hpp src/auth.cpp
                                         src/auth_client.hpp src/auth_client.cpp)
+
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
+                        ${ELECTRONIC_PATH}/api ${PROJECT_SOURCE_DIR}/proto/api)
+message(WARNING ${ELECTRONIC_PATH})
+
 # Grpc enable
 include(GrpcTargets)
-add_grpc_library(${PROJECT_NAME}_proto PROTOS handlers/auth_service.proto)
+add_grpc_library(${PROJECT_NAME}_proto PROTOS
+                 api/auth_service/v1/auth_service.proto)
 
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-postgresql
                                                   ${PROJECT_NAME}_proto)

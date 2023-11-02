@@ -8,4 +8,3 @@ cmake-build-*/
 CMakeUserPresets.json
 compile_commands.json
 .DS_Store
-proto

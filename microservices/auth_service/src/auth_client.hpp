@@ -5,7 +5,7 @@
 #include <userver/components/loggable_component_base.hpp>
 #include <userver/ugrpc/client/client_factory_component.hpp>
 
-#include <handlers/auth_service_client.usrv.pb.hpp>
+#include <api/auth_service/v1/auth_service_client.usrv.pb.hpp>
 
 namespace auth_service
 {
@@ -24,8 +24,8 @@ public:
     static userver::yaml_config::Schema GetStaticConfigSchema();
 
 private:
-    userver::ugrpc::client::ClientFactory& client_factory_;
-    handlers::api::AuthServiceClient       client_;
+    userver::ugrpc::client::ClientFactory&   client_factory_;
+    api::auth_service::v1::AuthServiceClient client_;
 };
 
 void AppendAuthClient(userver::components::ComponentList& component_list);

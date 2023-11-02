@@ -11,14 +11,15 @@ namespace auth_service
 
 Auth::Auth(const userver::components::ComponentConfig&  config,
            const userver::components::ComponentContext& component_context) :
-handlers::api::AuthServiceBase::Component(config, component_context),
+api::auth_service::v1::AuthServiceBase::Component(config, component_context),
 pg_cluster_(component_context.FindComponent<userver::components::Postgres>("postgres-db-1").GetCluster()),
 client_(component_context.FindComponent<AuthClient>())
 {
 }
 
 
-void Auth::Register(handlers::api::AuthServiceBase::RegisterCall& call, handlers::api::RegisterRequest&& request)
+void Auth::Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
+                    api::auth_service::v1::RegisterRequest&&              request)
 {
     const auto& email    = request.email();
     const auto& password = request.password();
@@ -28,12 +29,12 @@ void Auth::Register(handlers::api::AuthServiceBase::RegisterCall& call, handlers
         token = client_.Register(email.substr(5), password.substr(5));
 
     token = email + password;
-    handlers::api::RegisterResponse response;
+    api::auth_service::v1::RegisterResponse response;
     response.set_token(token);
     call.Finish(response);
 }
 
-void Auth::Login(handlers::api::AuthServiceBase::LoginCall& call, handlers::api::LoginRequest&& request)
+void Auth::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call, api::auth_service::v1::LoginRequest&& request)
 {
     const auto& email    = request.email();
     const auto& password = request.password();
@@ -43,7 +44,7 @@ void Auth::Login(handlers::api::AuthServiceBase::LoginCall& call, handlers::api:
         token = client_.Login(email.substr(5), password.substr(5));
 
     token = email + password;
-    handlers::api::LoginResponse response;
+    api::auth_service::v1::LoginResponse response;
     response.set_token(token);
     call.Finish(response);
 }

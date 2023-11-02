@@ -10,14 +10,15 @@ AuthClient::AuthClient(const userver::components::ComponentConfig&  config,
                        const userver::components::ComponentContext& component_context) :
 userver::components::LoggableComponentBase(config, component_context),
 client_factory_(component_context.FindComponent<userver::ugrpc::client::ClientFactoryComponent>().GetFactory()),
-client_(client_factory_.MakeClient<handlers::api::AuthServiceClient>("auth-client", config["endpoint"].As<std::string>()))
+client_(client_factory_.MakeClient<api::auth_service::v1::AuthServiceClient>("auth-client",
+                                                                             config["endpoint"].As<std::string>()))
 {
 }
 
 
 std::string AuthClient::Register(std::string email, std::string password)
 {
-    handlers::api::RegisterRequest request;
+    api::auth_service::v1::RegisterRequest request;
     request.set_email(std::move(email));
     request.set_password(std::move(password));
 
@@ -33,14 +34,14 @@ std::string AuthClient::Register(std::string email, std::string password)
     // The client should call `Finish` (in case of single response) or `Read`
     // until `false` (in case of response stream), otherwise the RPC will be
     // cancelled.
-    handlers::api::RegisterResponse response = stream.Finish();
+    api::auth_service::v1::RegisterResponse response = stream.Finish();
 
     return std::move(*response.mutable_token());
 }
 
 std::string AuthClient::Login(std::string email, std::string password)
 {
-    handlers::api::LoginRequest request;
+    api::auth_service::v1::LoginRequest request;
     request.set_email(std::move(email));
     request.set_password(std::move(password));
 
@@ -56,7 +57,7 @@ std::string AuthClient::Login(std::string email, std::string password)
     // The client should call `Finish` (in case of single response) or `Read`
     // until `false` (in case of response stream), otherwise the RPC will be
     // cancelled.
-    handlers::api::LoginResponse response = stream.Finish();
+    api::auth_service::v1::LoginResponse response = stream.Finish();
 
     return std::move(*response.mutable_token());
 }

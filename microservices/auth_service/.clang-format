@@ -97,7 +97,7 @@ IncludeCategories:
   - Priority: 1
     Regex: '^<userver/(.+)>$'
   - Priority: 2
-    Regex: '^<handlers/(.+)>$'
+    Regex: '^<api/(.+)>$'
   - Priority: 3
     Regex: '^<(.+)>$'
   - Priority: 4
