@@ -24,7 +24,7 @@ Microservice for registration, authentication
 * `make install` - does a `make build-release` and runs install in directory set in environment `PREFIX`
 * `make install-debug` - does a `make build-debug` and runs install in directory set in environment `PREFIX`
 
-## Api
+## 🧿 Api
 - [Grpc](../../api)
 
 ## ⚒️ Tools

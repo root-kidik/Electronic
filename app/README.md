@@ -23,7 +23,7 @@ ninja
 ./bin/Electronic
 ```
 
-## Api
+## 🧿 Api
 - [Grpc](../api)
 
 ## ⚒️ Tools
