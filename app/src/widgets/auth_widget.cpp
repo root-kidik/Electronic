@@ -12,5 +12,14 @@ AuthWidget::AuthWidget(QWidget* parent) : QWidget{parent}
     label_.setText("Login widget");
     btn_.setText("login");
 
-    QObject::connect(&btn_, &QPushButton::clicked, this, [this]() { emit NextWidget(Widgets::Profile); });
+    QObject::connect(&btn_,
+                     &QPushButton::clicked,
+                     this,
+                     [this]()
+                     {
+                         qDebug() << "Register: " << auth_service_.Register("user@mail.ru", "password");
+                         qDebug() << "Login: " << auth_service_.Login("user@mail.ru", "password");
+
+                         emit NextWidget(Widgets::Profile);
+                     });
 }
