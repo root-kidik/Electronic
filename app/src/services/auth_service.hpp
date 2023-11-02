@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QObject>
-#include <QtCore/qstring.h>
+#include <QString>
 
 #include "auth_service.qpb.h"
 #include "auth_service_client.grpc.qpb.h"
