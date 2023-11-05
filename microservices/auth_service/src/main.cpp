@@ -8,7 +8,6 @@
 #include <userver/utils/daemon_run.hpp>
 
 #include "auth.hpp"
-#include "auth_client.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -21,7 +20,6 @@ int main(int argc, char* argv[])
                               .Append<userver::server::handlers::TestsControl>();
 
     auth_service::AppendAuth(component_list);
-    auth_service::AppendAuthClient(component_list);
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }

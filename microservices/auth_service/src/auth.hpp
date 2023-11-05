@@ -9,7 +9,6 @@
 #include <string>
 #include <string_view>
 
-#include "auth_client.hpp"
 
 namespace auth_service
 {
@@ -28,7 +27,6 @@ public:
 
 private:
     userver::storages::postgres::ClusterPtr pg_cluster_;
-    AuthClient&                             client_;
 };
 
 void AppendAuth(userver::components::ComponentList& component_list);
