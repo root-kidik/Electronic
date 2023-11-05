@@ -9,7 +9,6 @@
 #include <string>
 #include <string_view>
 
-
 namespace auth_service
 {
 
@@ -25,6 +24,8 @@ public:
                   api::auth_service::v1::RegisterRequest&&              request) override;
     void Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
                api::auth_service::v1::LoginRequest&&              request) override;
+    void Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, api::auth_service::v1::AuthRequest&& request) override;
+
 
 private:
     std::string GenerateJwtToken(const std::string& email);

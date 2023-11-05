@@ -17,8 +17,7 @@ AuthWidget::AuthWidget(QWidget* parent) : QWidget{parent}
                      this,
                      [this]()
                      {
-                         qDebug() << "Register: " << auth_service_.Register("user@mail.ru", "password");
-                         qDebug() << "Login: " << auth_service_.Login("user@mail.ru", "password");
+                         auth_service_.Register("user@mail.ru", "password");
 
                          emit NextWidget(Widgets::Profile);
                      });

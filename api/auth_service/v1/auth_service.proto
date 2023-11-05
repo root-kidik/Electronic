@@ -5,6 +5,7 @@ package api.auth_service.v1;
 service AuthService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
   rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Auth(AuthRequest) returns (AuthResponse) {}
 }
 
 message RegisterRequest {
@@ -23,4 +24,10 @@ message LoginRequest {
 
 message LoginResponse {
   string token = 1;
+}
+
+message AuthRequest {}
+
+message AuthResponse {
+  string email = 1;
 }
