@@ -27,5 +27,5 @@ QString AuthService::Login(const QString& email, const QString& password)
     request.setPassword(password);
 
     client_.Login(request, &login_response_);
-    return register_response_.token();
+    return login_response_.token();
 }
