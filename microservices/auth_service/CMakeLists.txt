@@ -8,7 +8,8 @@ include(GNUInstallDirs)
 add_subdirectory(third_party/userver)
 
 # Common sources
-add_library(${PROJECT_NAME}_objs OBJECT src/auth.hpp src/auth.cpp)
+add_library(${PROJECT_NAME}_objs OBJECT src/auth_service.hpp
+                                        src/auth_service.cpp)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
                         ${ELECTRONIC_PATH}/api ${PROJECT_SOURCE_DIR}/proto/api)

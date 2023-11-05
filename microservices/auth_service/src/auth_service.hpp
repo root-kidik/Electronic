@@ -13,12 +13,13 @@
 namespace auth_service
 {
 
-class Auth final : public api::auth_service::v1::AuthServiceBase::Component
+class AuthService final : public api::auth_service::v1::AuthServiceBase::Component
 {
 public:
     static constexpr std::string_view kName = "handler-auth";
 
-    Auth(const userver::components::ComponentConfig& config, const userver::components::ComponentContext& component_context);
+    AuthService(const userver::components::ComponentConfig&  config,
+                const userver::components::ComponentContext& component_context);
 
     void Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
                   api::auth_service::v1::RegisterRequest&&              request) override;
@@ -29,6 +30,6 @@ private:
     userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 
-void AppendAuth(userver::components::ComponentList& component_list);
+void AppendAuthService(userver::components::ComponentList& component_list);
 
 } // namespace auth_service

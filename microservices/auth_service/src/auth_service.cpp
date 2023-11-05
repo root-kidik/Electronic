@@ -1,4 +1,4 @@
-#include "auth.hpp"
+#include "auth_service.hpp"
 
 #include <userver/clients/dns/component.hpp>
 #include <userver/components/component_context.hpp>
@@ -10,16 +10,16 @@
 namespace auth_service
 {
 
-Auth::Auth(const userver::components::ComponentConfig&  config,
-           const userver::components::ComponentContext& component_context) :
+AuthService::AuthService(const userver::components::ComponentConfig&  config,
+                         const userver::components::ComponentContext& component_context) :
 api::auth_service::v1::AuthServiceBase::Component(config, component_context),
 pg_cluster_(component_context.FindComponent<userver::components::Postgres>("postgres-db-1").GetCluster())
 {
 }
 
 
-void Auth::Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
-                    api::auth_service::v1::RegisterRequest&&              request)
+void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
+                           api::auth_service::v1::RegisterRequest&&              request)
 {
     const auto& email    = request.email();
     const auto& password = request.password();
@@ -31,7 +31,7 @@ void Auth::Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
     call.Finish(response);
 }
 
-void Auth::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call, api::auth_service::v1::LoginRequest&& request)
+void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call, api::auth_service::v1::LoginRequest&& request)
 {
     const auto& email    = request.email();
     const auto& password = request.password();
@@ -43,9 +43,9 @@ void Auth::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call, api::a
     call.Finish(response);
 }
 
-void AppendAuth(userver::components::ComponentList& component_list)
+void AppendAuthService(userver::components::ComponentList& component_list)
 {
-    component_list.Append<Auth>();
+    component_list.Append<AuthService>();
     component_list.Append<userver::components::Postgres>("postgres-db-1");
     component_list.Append<userver::clients::dns::Component>();
 }
