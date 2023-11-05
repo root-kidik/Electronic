@@ -23,6 +23,12 @@ void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall&
 {
     const auto& email    = request.email();
     const auto& password = request.password();
+
+    auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
+                                       "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) ",
+                                       email,
+                                       password);
+
     std::string token;
 
     token = email + password;

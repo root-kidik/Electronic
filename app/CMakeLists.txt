@@ -4,5 +4,4 @@ include(cmake/Config.cmake)
 
 project(Electronic)
 
-add_subdirectory(third_party/jwt-cpp)
 add_subdirectory(src)
