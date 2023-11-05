@@ -14,8 +14,6 @@ Microservice for registration, authentication
 ## 🔨 Build and Run 🚀
 - `make build-debug` - debug build of the service with all the assertions and sanitizers enabled
 - `make build-release` - release build of the service with LTO
-- `make test-debug` - does a `make build-debug` and runs all the tests on the result
-- `make test-release` - does a `make build-release` and runs all the tests on the result
 - `make service-start-debug` - builds the service in debug mode and starts it
 - `make service-start-release` - builds the service in release mode and starts it
 - `make format` - autoformat all the C++ and Python sources
