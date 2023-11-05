@@ -4,5 +4,5 @@ CREATE SCHEMA IF NOT EXISTS auth_schema;
 
 CREATE TABLE IF NOT EXISTS auth_schema.users (
     email TEXT PRIMARY KEY,
-    password INTEGER DEFAULT(1)
+    password TEXT NOT NULL 
 );
