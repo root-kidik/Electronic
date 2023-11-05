@@ -16,7 +16,7 @@ namespace auth_service
 class AuthService final : public api::auth_service::v1::AuthServiceBase::Component
 {
 public:
-    static constexpr std::string_view kName = "handler-auth";
+    static constexpr std::string_view kName = "auth-service";
 
     AuthService(const userver::components::ComponentConfig&  config,
                 const userver::components::ComponentContext& component_context);
