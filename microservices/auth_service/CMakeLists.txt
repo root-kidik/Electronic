@@ -5,6 +5,7 @@ include(cmake/Config.cmake)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 
+add_subdirectory(third_party/jwt-cpp)
 add_subdirectory(third_party/userver)
 
 # Common sources
@@ -13,15 +14,15 @@ add_library(${PROJECT_NAME}_objs OBJECT src/auth_service.hpp
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
                         ${ELECTRONIC_PATH}/api ${PROJECT_SOURCE_DIR}/proto/api)
-message(WARNING ${ELECTRONIC_PATH})
 
 # Grpc enable
 include(GrpcTargets)
 add_grpc_library(${PROJECT_NAME}_proto PROTOS
                  api/auth_service/v1/auth_service.proto)
 
-target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-postgresql
-                                                  ${PROJECT_NAME}_proto)
+target_link_libraries(
+  ${PROJECT_NAME}_objs PUBLIC userver-postgresql ${PROJECT_NAME}_proto
+                              jwt-cpp::jwt-cpp)
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
