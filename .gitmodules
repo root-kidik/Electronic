@@ -4,3 +4,6 @@
 [submodule "microservices/auth_service/third_party/jwt-cpp"]
 	path = microservices/auth_service/third_party/jwt-cpp
 	url = https://github.com/Thalhammer/jwt-cpp.git
+[submodule "microservices/auth_service/third_party/bcrypt"]
+	path = microservices/auth_service/third_party/bcrypt
+	url = https://github.com/root-kidik/bcrypt.git

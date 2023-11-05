@@ -5,6 +5,7 @@ include(cmake/Config.cmake)
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 
+add_subdirectory(third_party/bcrypt)
 add_subdirectory(third_party/jwt-cpp)
 add_subdirectory(third_party/userver)
 
@@ -22,7 +23,7 @@ add_grpc_library(${PROJECT_NAME}_proto PROTOS
 
 target_link_libraries(
   ${PROJECT_NAME}_objs PUBLIC userver-postgresql ${PROJECT_NAME}_proto
-                              jwt-cpp::jwt-cpp)
+                              jwt-cpp::jwt-cpp bcrypt)
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)
