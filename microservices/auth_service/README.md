@@ -38,4 +38,6 @@ Microservice for registration, authentication
 ## 📚 Third party
 - Microservice framework: [userver](https://userver.tech/d3/da9/md_en_2userver_2tutorial_2build.html)
 - Testing microservice framework: [Testsuite](https://github.com/yandex/yandex-taxi-testsuite)
+- Hash library: [bcrypt](https://github.com/root-kidik/bcrypt) 
+- Token generator: [jwt-cpp](https://github.com/Thalhammer/jwt-cpp)
 
