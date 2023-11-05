@@ -5,7 +5,9 @@
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/utils/assert.hpp>
 
+#include <bcrypt.h>
 #include <fmt/format.h>
+#include <jwt-cpp/jwt.h>
 
 namespace auth_service
 {
@@ -17,7 +19,6 @@ pg_cluster_(component_context.FindComponent<userver::components::Postgres>("post
 {
 }
 
-
 void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall& call,
                            api::auth_service::v1::RegisterRequest&&              request)
 {
@@ -27,13 +28,10 @@ void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall&
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
                                        "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) ",
                                        email,
-                                       password);
+                                       bcrypt::generateHash(password));
 
-    std::string token;
-
-    token = email + password;
     api::auth_service::v1::RegisterResponse response;
-    response.set_token(token);
+    response.set_token(GenerateJwtToken(email));
     call.Finish(response);
 }
 
@@ -41,12 +39,30 @@ void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
 {
     const auto& email    = request.email();
     const auto& password = request.password();
-    std::string token;
 
-    token = email + password;
+    auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
+                                       "SELECT password FROM auth_schema.users WHERE email = ($1) ",
+                                       email);
+
+    const auto& hash_password = result[0].As<std::string>();
+
     api::auth_service::v1::LoginResponse response;
+
+    std::string token;
+    if (bcrypt::validatePassword(password, hash_password))
+        token = GenerateJwtToken(email);
+
     response.set_token(token);
     call.Finish(response);
+}
+
+std::string AuthService::GenerateJwtToken(const std::string& email)
+{
+    return jwt::create()
+        .set_issuer("auth0")
+        .set_type("JWS")
+        .set_payload_claim("email", jwt::claim(email))
+        .sign(jwt::algorithm::hs512{"some-strog-secret-key"});
 }
 
 void AppendAuthService(userver::components::ComponentList& component_list)

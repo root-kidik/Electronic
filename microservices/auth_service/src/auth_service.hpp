@@ -27,6 +27,8 @@ public:
                api::auth_service::v1::LoginRequest&&              request) override;
 
 private:
+    std::string GenerateJwtToken(const std::string& email);
+
     userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 
