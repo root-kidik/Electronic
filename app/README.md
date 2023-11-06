@@ -15,6 +15,9 @@ A Cross Platform and Open Source Electronics Design Automation Suite
 - `make build-release` - release build of the app
 - `make app-start-debug` - builds the app in debug mode and starts it
 - `make app-start-release` - builds the app in release mode and starts it
+- `make format` - autoformat all the C++ sources 
+- `make clean-` - cleans the object files
+- `make dist-clean` - clean all, including the CMake cached configurations
 
 ## 🧿 Api
 - [Grpc](../api)
