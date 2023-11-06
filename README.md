@@ -3,7 +3,7 @@ A Cross Platform and Open Source Electronics Design Automation Suite
 
 ## 🖇️ Clone
 ```
-git clone https://github.com/root-kidik/Electronic.git
+git clone --recurse-submodules https://github.com/root-kidik/Electronic.git
 ```
 
 ## 📖 Projects
