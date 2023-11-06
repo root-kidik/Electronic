@@ -13,8 +13,8 @@ A Cross Platform and Open Source Electronics Design Automation Suite
 ## 🔨 Build and Run 🚀
 - `make build-debug` - debug build of the app
 - `make build-release` - release build of the app
-- `make service-start-debug` - builds the app in debug mode and starts it
-- `make service-start-release` - builds the app in release mode and starts it
+- `make app-start-debug` - builds the app in debug mode and starts it
+- `make app-start-release` - builds the app in release mode and starts it
 
 ## 🧿 Api
 - [Grpc](../api)
