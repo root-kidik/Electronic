@@ -9,26 +9,18 @@ A Cross Platform and Open Source Electronics Design Automation Suite
 ## ⚙️ Configure
 - Install [Qt6](https://doc.qt.io/qt-6)
 - Install [CMake](https://cmake.org)
-- Install [Ninja](https://ninja-build.org)
 
-## 🔨 Build
-```
-qt-cmake -G Ninja -S . -B build
-cd build
-ninja
-```
-
-## 🚀 Run 
-```
-./bin/Electronic
-```
+## 🔨 Build and Run 🚀
+- `make build-debug` - debug build of the app
+- `make build-release` - release build of the app
+- `make service-start-debug` - builds the app in debug mode and starts it
+- `make service-start-release` - builds the app in release mode and starts it
 
 ## 🧿 Api
 - [Grpc](../api)
 
 ## ⚒️ Tools
 - Build generator: [CMake](https://cmake.org)
-- Build system: [Ninja](https://ninja-build.org)
 - Code formatter: [clang-format](https://clang.llvm.org/docs/ClangFormat.html)
 - Code static analyzer: [clang-tidy](https://clang.llvm.org/extra/clang-tidy)
 
