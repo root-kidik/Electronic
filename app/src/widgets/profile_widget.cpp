@@ -12,5 +12,5 @@ ProfileWidget::ProfileWidget(QWidget* parent) : QWidget{parent}
     label_.setText("Profile widget");
     btn_.setText("exit");
 
-    QObject::connect(&btn_, &QPushButton::clicked, this, [this]() { emit NextWidget(Widgets::Auth); });
+    QObject::connect(&btn_, &QPushButton::clicked, this, [this]() { emit NextWidget(Widgets::Profile); });
 }

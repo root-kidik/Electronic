@@ -4,8 +4,10 @@ set(CPP_SRC
     main_window.hpp
     services/auth_service.hpp
     services/auth_service.cpp
-    widgets/auth_widget.hpp
-    widgets/auth_widget.cpp
+    widgets/registration_widget.hpp
+    widgets/registration_widget.cpp
+    widgets/login_widget.hpp
+    widgets/login_widget.cpp
     widgets/profile_widget.hpp
     widgets/profile_widget.cpp)
 

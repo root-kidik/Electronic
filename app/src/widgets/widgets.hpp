@@ -2,6 +2,7 @@
 
 enum Widgets
 {
-    Auth = 0,
+    Registration = 0,
+    Login,
     Profile
 };

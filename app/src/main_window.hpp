@@ -3,8 +3,9 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
-#include "widgets/auth_widget.hpp"
+#include "widgets/login_widget.hpp"
 #include "widgets/profile_widget.hpp"
+#include "widgets/registration_widget.hpp"
 
 class MainWindow : public QMainWindow
 {
@@ -14,7 +15,8 @@ public:
     MainWindow(QWidget* parent = nullptr);
 
 private:
-    QStackedWidget stacked_widget_;
-    AuthWidget     auth_widget_;
-    ProfileWidget  profile_widget_;
+    QStackedWidget     stacked_widget_;
+    RegistrationWidget registration_widget_;
+    LoginWidget        login_widget_;
+    ProfileWidget      profile_widget_;
 };
