@@ -23,6 +23,9 @@ components_manager:
 
         auth-service:
 
+        auth-client:
+            endpoint: $auth-endpoint
+
         grpc-server:
             port: 8081
             service-defaults:

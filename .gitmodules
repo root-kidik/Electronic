@@ -7,3 +7,6 @@
 [submodule "microservices/auth_service/third_party/bcrypt"]
 	path = microservices/auth_service/third_party/bcrypt
 	url = https://github.com/root-kidik/bcrypt.git
+[submodule "microservices/project_service/third_party/userver"]
+	path = microservices/project_service/third_party/userver
+	url = https://github.com/userver-framework/userver.git

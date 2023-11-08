@@ -14,18 +14,18 @@ pytest_plugins = [
 
 
 @pytest.fixture(scope="session")
-def hello_protos():
+def auth_protos():
     return grpc.protos("auth_service.proto")
 
 
 @pytest.fixture(scope="session")
-def hello_services():
+def auth_services():
     return grpc.services("auth_service.proto")
 
 
 @pytest.fixture
-def mock_grpc_server(mock_grpc_hello_session):
-    with mock_grpc_hello_session.mock() as mock:
+def mock_grpc_server(mock_grpc_auth_session):
+    with mock_grpc_auth_session.mock() as mock:
         yield mock
 
 

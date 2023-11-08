@@ -7,6 +7,7 @@
 #include <userver/ugrpc/server/server_component.hpp>
 #include <userver/utils/daemon_run.hpp>
 
+#include "auth_client.hpp"
 #include "auth_service.hpp"
 
 int main(int argc, char* argv[])
@@ -20,6 +21,7 @@ int main(int argc, char* argv[])
                               .Append<userver::server::handlers::TestsControl>();
 
     auth_service::AppendAuthService(component_list);
+    auth_service::AppendAuthClient(component_list);
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }
