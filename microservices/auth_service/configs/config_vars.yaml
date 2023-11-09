@@ -8,7 +8,6 @@ is-testing: false
 server-port: 8080
 server-grpc-port: 8081
 
-auth-endpoint: '[::1]:8081'
 secret-key: 'YI>(b-]gk9t{0Oa0iYe:s8~[(l?e_^7i'
 
 dbconnection: 'postgresql://auth_service_user:password@localhost:5432/auth_service_db_1'

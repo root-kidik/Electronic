@@ -10,9 +10,8 @@ add_subdirectory(third_party/jwt-cpp)
 add_subdirectory(third_party/userver)
 
 # Common sources
-add_library(
-  ${PROJECT_NAME}_objs OBJECT src/auth_service.hpp src/auth_service.cpp
-                              src/auth_client.hpp src/auth_client.cpp)
+add_library(${PROJECT_NAME}_objs OBJECT src/auth_service.hpp
+                                        src/auth_service.cpp)
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory
                         ${ELECTRONIC_PATH}/api ${PROJECT_SOURCE_DIR}/proto/api)
