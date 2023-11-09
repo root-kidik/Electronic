@@ -43,16 +43,15 @@ void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall&
         return;
     }
 
-    if (pg_cluster_
-            ->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                      "SELECT email FROM auth_schema.users WHERE email = ($1)",
-                      email)
-            .Size())
+    if (!pg_cluster_
+             ->Execute(userver::storages::postgres::ClusterHostType::kMaster,
+                       "SELECT email FROM auth_schema.users WHERE email = ($1)",
+                       email)
+             .IsEmpty())
     {
         call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email already exist!"));
         return;
     }
-
 
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
                                        "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) RETURNING "
@@ -75,14 +74,13 @@ void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
                                        "SELECT id, password FROM auth_schema.users WHERE email = ($1)",
                                        email);
-    if (!result.Size())
+    if (result.IsEmpty())
     {
         call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email doesn't exists!"));
         return;
     }
 
-    const auto  id            = result[0]["id"].As<std::int32_t>();
-    const auto& hash_password = result[0]["password"].As<std::string>();
+    const auto [id, hash_password] = result[0].As<std::int32_t, std::string>();
 
     if (!bcrypt::validatePassword(password, hash_password))
     {
