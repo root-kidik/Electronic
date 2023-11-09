@@ -14,6 +14,25 @@
 #include <exception>
 #include <regex>
 
+namespace
+{
+constexpr std::string_view kEmailValidationRegex = R"([_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))";
+constexpr std::string_view kPasswordValidationRegex = R"(^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$)";
+
+constexpr std::string_view kInvalidEmailError    = "Invalid email!";
+constexpr std::string_view kInvalidPasswordError = "Password: num >= 1, special symbol >= 1, length >= 8!";
+constexpr std::string_view kRepeatedEmailError   = "User with this email already exist!";
+constexpr std::string_view kWrongEmailError      = "User with this email doesn't exists!";
+constexpr std::string_view kWrongPasswordError   = "Wrong password!";
+constexpr std::string_view kWrongTokenError      = "Wrong token!";
+
+constexpr std::string_view kSelectUserByEmailQuery = "SELECT email FROM auth_schema.users WHERE email = ($1)";
+constexpr std::string_view
+    kInsertUserQuery = "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) RETURNING users.id";
+constexpr std::string_view
+    kSelectUserIdPasswordByEmailQuery = "SELECT id, password FROM auth_schema.users WHERE email = ($1)";
+} // namespace
+
 namespace auth_service
 {
 
@@ -30,32 +49,28 @@ void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall&
     const auto& email    = request.email();
     const auto& password = request.password();
 
-    if (!std::regex_match(email, std::regex(R"([_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))")))
+    if (!std::regex_match(email, std::regex(kEmailValidationRegex.data())))
     {
-        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Invalid email!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kInvalidEmailError.data()));
         return;
     }
 
-    if (!std::regex_match(password, std::regex(R"(^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$)")))
+    if (!std::regex_match(password, std::regex(kPasswordValidationRegex.data())))
     {
-        call.FinishWithError(
-            grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Password: num >= 1, special symbol >= 1, length >= 8!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kInvalidPasswordError.data()));
         return;
     }
 
     if (!pg_cluster_
-             ->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                       "SELECT email FROM auth_schema.users WHERE email = ($1)",
-                       email)
+             ->Execute(userver::storages::postgres::ClusterHostType::kMaster, kSelectUserByEmailQuery.data(), email)
              .IsEmpty())
     {
-        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email already exist!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kRepeatedEmailError.data()));
         return;
     }
 
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                                       "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) RETURNING "
-                                       "users.id",
+                                       kInsertUserQuery.data(),
                                        email,
                                        bcrypt::generateHash(password));
 
@@ -72,11 +87,11 @@ void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
     const auto& password = request.password();
 
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                                       "SELECT id, password FROM auth_schema.users WHERE email = ($1)",
+                                       kSelectUserIdPasswordByEmailQuery.data(),
                                        email);
     if (result.IsEmpty())
     {
-        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email doesn't exists!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kWrongEmailError.data()));
         return;
     }
 
@@ -84,7 +99,7 @@ void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
 
     if (!bcrypt::validatePassword(password, hash_password))
     {
-        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Wrong password!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kWrongPasswordError.data()));
         return;
     }
 
@@ -110,7 +125,7 @@ void AuthService::Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, a
         id = decoded_token.get_payload_claim("id").as_integer();
     } catch (const std::exception& error)
     {
-        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Wrong token!"));
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, kWrongTokenError.data()));
         return;
     }
 
