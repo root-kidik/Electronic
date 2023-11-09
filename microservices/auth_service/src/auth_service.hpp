@@ -26,10 +26,12 @@ public:
                api::auth_service::v1::LoginRequest&&              request) override;
     void Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, api::auth_service::v1::AuthRequest&& request) override;
 
+    static userver::yaml_config::Schema GetStaticConfigSchema();
 
 private:
     std::string GenerateJwtToken(std::int32_t id);
 
+    std::string                             secret_key_;
     userver::storages::postgres::ClusterPtr pg_cluster_;
 };
 

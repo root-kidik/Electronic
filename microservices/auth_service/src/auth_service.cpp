@@ -4,6 +4,7 @@
 #include <userver/components/component_context.hpp>
 #include <userver/storages/postgres/cluster.hpp>
 #include <userver/utils/assert.hpp>
+#include <userver/yaml_config/merge_schemas.hpp>
 
 #include <bcrypt.h>
 #include <fmt/format.h>
@@ -39,6 +40,7 @@ namespace auth_service
 AuthService::AuthService(const userver::components::ComponentConfig&  config,
                          const userver::components::ComponentContext& component_context) :
 api::auth_service::v1::AuthServiceBase::Component(config, component_context),
+secret_key_(config["secret-key"].As<std::string>()),
 pg_cluster_(component_context.FindComponent<userver::components::Postgres>("postgres-db-1").GetCluster())
 {
 }
@@ -118,7 +120,7 @@ void AuthService::Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, a
         auto decoded_token = jwt::decode<jwt::traits::boost_json>(token);
 
         jwt::verify<jwt::traits::boost_json>()
-            .allow_algorithm(jwt::algorithm::hs512{"some-strog-secret-key"})
+            .allow_algorithm(jwt::algorithm::hs512{secret_key_})
             .with_issuer(decoded_token.get_issuer())
             .verify(decoded_token);
 
@@ -137,7 +139,22 @@ void AuthService::Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, a
 std::string AuthService::GenerateJwtToken(std::int32_t id)
 {
     return jwt::create<jwt::traits::boost_json>().set_issuer("auth0").set_type("JWS").set_payload_claim("id", id).sign(
-        jwt::algorithm::hs512{"some-strog-secret-key"});
+        jwt::algorithm::hs512{secret_key_});
+}
+
+userver::yaml_config::Schema AuthService::GetStaticConfigSchema()
+{
+    return userver::yaml_config::MergeSchemas<userver::components::LoggableComponentBase>(R"(
+type: object
+description: >
+    authorization microservice
+additionalProperties: false
+properties:
+    secret-key:
+        type: string
+        description: >
+            JWT secret key 
+)");
 }
 
 void AppendAuthService(userver::components::ComponentList& component_list)

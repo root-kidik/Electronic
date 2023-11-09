@@ -22,6 +22,7 @@ components_manager:
             channel-args: {}
 
         auth-service:
+            secret-key: $secret-key
 
         auth-client:
             endpoint: $auth-endpoint
