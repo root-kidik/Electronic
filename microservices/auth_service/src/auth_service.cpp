@@ -7,7 +7,12 @@
 
 #include <bcrypt.h>
 #include <fmt/format.h>
+#include <grpcpp/support/status.h>
 #include <jwt-cpp/jwt.h>
+#include <jwt-cpp/traits/boost-json/traits.h>
+
+#include <exception>
+#include <regex>
 
 namespace auth_service
 {
@@ -25,13 +30,40 @@ void AuthService::Register(api::auth_service::v1::AuthServiceBase::RegisterCall&
     const auto& email    = request.email();
     const auto& password = request.password();
 
+    if (!std::regex_match(email, std::regex(R"([_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4}))")))
+    {
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Invalid email!"));
+        return;
+    }
+
+    if (!std::regex_match(password, std::regex(R"(^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$)")))
+    {
+        call.FinishWithError(
+            grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Password: num >= 1, special symbol >= 1, length >= 8!"));
+        return;
+    }
+
+    if (pg_cluster_
+            ->Execute(userver::storages::postgres::ClusterHostType::kMaster,
+                      "SELECT email FROM auth_schema.users WHERE email = ($1)",
+                      email)
+            .Size())
+    {
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email already exist!"));
+        return;
+    }
+
+
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                                       "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) ",
+                                       "INSERT INTO auth_schema.users(email, password) VALUES($1, $2) RETURNING "
+                                       "users.id",
                                        email,
                                        bcrypt::generateHash(password));
 
+    const auto id = result.AsSingleRow<std::int32_t>();
+
     api::auth_service::v1::RegisterResponse response;
-    response.set_token(GenerateJwtToken(email));
+    response.set_token(GenerateJwtToken(id));
     call.Finish(response);
 }
 
@@ -41,52 +73,58 @@ void AuthService::Login(api::auth_service::v1::AuthServiceBase::LoginCall& call,
     const auto& password = request.password();
 
     auto result = pg_cluster_->Execute(userver::storages::postgres::ClusterHostType::kMaster,
-                                       "SELECT password FROM auth_schema.users WHERE email = ($1) ",
+                                       "SELECT id, password FROM auth_schema.users WHERE email = ($1)",
                                        email);
+    if (!result.Size())
+    {
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "User with this email doesn't exists!"));
+        return;
+    }
 
-    const auto& hash_password = result[0].As<std::string>();
+    const auto  id            = result[0]["id"].As<std::int32_t>();
+    const auto& hash_password = result[0]["password"].As<std::string>();
+
+    if (!bcrypt::validatePassword(password, hash_password))
+    {
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Wrong password!"));
+        return;
+    }
 
     api::auth_service::v1::LoginResponse response;
-
-    std::string token;
-    if (bcrypt::validatePassword(password, hash_password))
-        token = GenerateJwtToken(email);
-
-    response.set_token(token);
+    response.set_token(GenerateJwtToken(id));
     call.Finish(response);
 }
 
-void AuthService::Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, api::auth_service::v1::AuthRequest&&)
+void AuthService::Auth(api::auth_service::v1::AuthServiceBase::AuthCall& call, api::auth_service::v1::AuthRequest&& request)
 {
-    auto token         = call.GetContext().client_metadata().find("token")->second;
-    auto decoded_token = jwt::decode(token.data());
+    const auto&  token = request.token();
+    std::int32_t id;
 
-    std::string email;
     try
     {
-        jwt::verify()
+        auto decoded_token = jwt::decode<jwt::traits::boost_json>(token);
+
+        jwt::verify<jwt::traits::boost_json>()
             .allow_algorithm(jwt::algorithm::hs512{"some-strog-secret-key"})
             .with_issuer(decoded_token.get_issuer())
             .verify(decoded_token);
 
-        email = decoded_token.get_payload_claim("email").as_string();
-    } catch (const std::system_error& error)
+        id = decoded_token.get_payload_claim("id").as_integer();
+    } catch (const std::exception& error)
     {
-        std::cout << error.what();
+        call.FinishWithError(grpc::Status(grpc::StatusCode::INVALID_ARGUMENT, "Wrong token!"));
+        return;
     }
 
     api::auth_service::v1::AuthResponse response;
-    response.set_email(email);
+    response.set_id(id);
     call.Finish(response);
 }
 
-std::string AuthService::GenerateJwtToken(const std::string& email)
+std::string AuthService::GenerateJwtToken(std::int32_t id)
 {
-    return jwt::create()
-        .set_issuer("auth0")
-        .set_type("JWS")
-        .set_payload_claim("email", jwt::claim(email))
-        .sign(jwt::algorithm::hs512{"some-strog-secret-key"});
+    return jwt::create<jwt::traits::boost_json>().set_issuer("auth0").set_type("JWS").set_payload_claim("id", id).sign(
+        jwt::algorithm::hs512{"some-strog-secret-key"});
 }
 
 void AppendAuthService(userver::components::ComponentList& component_list)

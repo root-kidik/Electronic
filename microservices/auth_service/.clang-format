@@ -99,7 +99,7 @@ IncludeCategories:
   - Priority: 2
     Regex: '^<api/(.+)>$'
   - Priority: 3
-    Regex: '^<(fmt|jwt-cpp|bcrypt)'
+    Regex: '^<(grpcpp|fmt|jwt-cpp|bcrypt)'
   - Priority: 4
     Regex: '^<(.+)>$'
   - Priority: 5

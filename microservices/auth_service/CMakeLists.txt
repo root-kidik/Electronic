@@ -24,7 +24,7 @@ add_grpc_library(${PROJECT_NAME}_proto PROTOS
 
 target_link_libraries(
   ${PROJECT_NAME}_objs PUBLIC userver-postgresql ${PROJECT_NAME}_proto
-                              jwt-cpp::jwt-cpp bcrypt)
+                              jwt-cpp::jwt-cpp bcrypt boost_json)
 
 # The Service
 add_executable(${PROJECT_NAME} src/main.cpp)

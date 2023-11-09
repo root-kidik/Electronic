@@ -28,7 +28,7 @@ public:
 
 
 private:
-    std::string GenerateJwtToken(const std::string& email);
+    std::string GenerateJwtToken(std::int32_t id);
 
     userver::storages::postgres::ClusterPtr pg_cluster_;
 };
