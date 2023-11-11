@@ -1,0 +1,11 @@
+worker-threads: 4
+worker-fs-threads: 2
+worker-grpc-threads: 2
+logger-level: debug
+
+is-testing: false
+
+server-port: 8070
+server-grpc-port: 8071
+
+dbconnection: 'postgresql://project_service_user:password@localhost:5432/project_service_db_1'
