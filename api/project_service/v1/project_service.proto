@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package api.project_service.v1;
+
+service ProjectService {
+  rpc Create(CreateRequest) returns (CreateResponse) {}
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {}
+}
+
+message CreateRequest {
+  string name = 1;
+}
+
+message CreateResponse {
+  int32 id = 1;
+}
+
+message DeleteRequest {
+  int32 id = 1;
+}
+
+message DeleteResponse {}

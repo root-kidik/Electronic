@@ -6,4 +6,5 @@ Contracts between [app](../app) and [microservices](../microservices)
 
 ## 🔒 Contracts
 - [auth_service](auth_service)
+- [project_service](project_service)
 
