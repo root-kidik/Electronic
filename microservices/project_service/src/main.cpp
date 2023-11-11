@@ -7,6 +7,7 @@
 #include <userver/ugrpc/server/server_component.hpp>
 #include <userver/utils/daemon_run.hpp>
 
+#include "auth_client.hpp"
 #include "middlewares/auth_middleware_component.hpp"
 #include "project_service.hpp"
 
@@ -22,6 +23,7 @@ int main(int argc, char* argv[])
 
     project_service::AppendProjectService(component_list);
     project_service::AppendAuthMiddlewareComponent(component_list);
+    project_service::AppendAuthClient(component_list);
 
     return userver::utils::DaemonMain(argc, argv, component_list);
 }

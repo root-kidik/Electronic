@@ -12,6 +12,8 @@ add_library(
   ${PROJECT_NAME}_objs OBJECT
   src/project_service.hpp
   src/project_service.cpp
+  src/auth_client.hpp
+  src/auth_client.cpp
   src/middlewares/jwt_auth_middleware.hpp
   src/middlewares/jwt_auth_middleware.cpp
   src/middlewares/auth_middleware_component.hpp
@@ -46,8 +48,7 @@ else()
   message(STATUS "Forcing old protobuf version for testsuite")
 endif()
 
-userver_testsuite_add_simple(PYTEST_ARGS --service-port=8070 REQUIREMENTS
-                             ${testsuite_requirements})
+userver_testsuite_add_simple(REQUIREMENTS ${testsuite_requirements})
 
 # Install
 if(DEFINED ENV{PREFIX})

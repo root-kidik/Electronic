@@ -21,12 +21,15 @@ components_manager:
             # https://grpc.github.io/grpc/core/group__grpc__arg__keys.html
             channel-args: {}
           
+        auth-client:
+            endpoint: $auth-endpoint
+
         auth-middleware:
 
         project-service:
 
         grpc-server:
-            port: 8071
+            port: 8081
             service-defaults:
                 middlewares: ["auth-middleware"]
                 task-processor: main-task-processor
