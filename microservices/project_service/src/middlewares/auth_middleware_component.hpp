@@ -1,6 +1,7 @@
 #pragma once
 
 #include <userver/components/component_list.hpp>
+#include <userver/engine/task/local_variable.hpp>
 #include <userver/ugrpc/server/middlewares/base.hpp>
 
 #include "../auth_client.hpp"
@@ -23,5 +24,7 @@ private:
 };
 
 void AppendAuthMiddlewareComponent(userver::components::ComponentList& component_list);
+
+inline userver::engine::TaskLocalVariable<std::int32_t> g_user_id;
 
 } // namespace project_service

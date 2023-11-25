@@ -8,7 +8,7 @@ namespace project_service
 AuthMiddlewareComponent::AuthMiddlewareComponent(const userver::components::ComponentConfig&  config,
                                                  const userver::components::ComponentContext& component_context) :
 MiddlewareComponentBase(config, component_context),
-auth_client_(component_context.FindComponent<AuthClient>())
+auth_client_(component_context.FindComponent<AuthClient>("auth-client"))
 {
 }
 

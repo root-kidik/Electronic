@@ -6,6 +6,8 @@
 #include <userver/utils/assert.hpp>
 #include <userver/yaml_config/merge_schemas.hpp>
 
+#include "middlewares/auth_middleware_component.hpp"
+
 namespace project_service
 {
 
@@ -19,11 +21,15 @@ pg_cluster_(component_context.FindComponent<userver::components::Postgres>("post
 void ProjectService::Create(api::project_service::v1::ProjectServiceBase::CreateCall& call,
                             api::project_service::v1::CreateRequest&&                 request)
 {
+    api::project_service::v1::CreateResponse response;
+    call.Finish(response);
 }
 
 void ProjectService::Delete(api::project_service::v1::ProjectServiceBase::DeleteCall& call,
                             api::project_service::v1::DeleteRequest&&                 request)
 {
+    api::project_service::v1::DeleteResponse response;
+    call.Finish(response);
 }
 
 void AppendProjectService(userver::components::ComponentList& component_list)
