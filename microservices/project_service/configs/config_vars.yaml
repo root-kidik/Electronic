@@ -8,6 +8,6 @@ is-testing: false
 server-port: 8080
 server-grpc-port: 8081
 
-auth-endpoint: 8071
+auth-endpoint: '[::1]:8071'
 
 dbconnection: 'postgresql://project_service_user:password@localhost:5432/project_service_db_1'
